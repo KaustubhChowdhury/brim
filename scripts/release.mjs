@@ -24,6 +24,7 @@ copyFileSync(source, join(outDir, published));
 const sha = createHash("sha256").update(readFileSync(source)).digest("hex");
 writeFileSync(join(outDir, "SHA256SUMS.txt"), `${sha}  ${published}\n`);
 copyFileSync(join(root, "docs", "INSTALL.txt"), join(outDir, "How to install.txt"));
+copyFileSync(join(root, "LICENSE.txt"), join(outDir, "LICENSE.txt"));
 
 console.log(`Release ${version} ready in ${outDir}`);
 for (const f of readdirSync(outDir)) console.log(`  ${f}`);

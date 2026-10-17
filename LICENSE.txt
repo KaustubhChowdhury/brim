@@ -1,0 +1,42 @@
+Brim
+Copyright (c) 2026 Kaustubh Chowdhury. All rights reserved.
+
+PROPRIETARY SOFTWARE LICENSE
+
+This software, including its source code, binaries, artwork and documentation
+(the "Software"), is the proprietary property of Kaustubh Chowdhury
+(the "Author") and is protected by copyright law.
+
+1. Permitted use. If you received the Brim installer from the Author or from a
+   source the Author authorised, you may install and use the Software on your
+   own computers for personal or internal business purposes.
+
+2. Restrictions. Unless the Author gives you prior written permission, you may
+   not:
+   a. copy, modify, adapt, translate or create derivative works of the Software;
+   b. distribute, sell, sublicense, rent, lend or otherwise make the Software
+      available to anyone else;
+   c. reverse engineer, decompile or disassemble the Software, except to the
+      extent applicable law expressly permits this despite this restriction;
+   d. remove or alter any copyright or proprietary notices.
+
+3. Source code. Access to the source code does not grant any licence to use,
+   copy or distribute it. The source code is confidential.
+
+4. Third-party components. The Software includes open-source components that
+   are licensed under their own terms. Those terms are listed in
+   THIRD-PARTY-NOTICES.txt, and nothing in this licence limits your rights
+   under them.
+
+5. No warranty. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT.
+
+6. Limitation of liability. TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT
+   SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY ARISING
+   FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR ITS USE.
+
+7. Termination. This licence ends automatically if you break its terms. When it
+   ends, you must uninstall and delete all copies of the Software.
+
+For permissions beyond this licence, contact the Author.

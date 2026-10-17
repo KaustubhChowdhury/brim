@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "Brim",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "identifier": "dev.wispdock.desktop",
   "build": {
     "beforeDevCommand": "npm run dev",
@@ -44,7 +44,7 @@
     "category": "Utility",
     "shortDescription": "A floating utility dock for the top of your Windows screen",
     "longDescription": "Brim is a compact floating island with media controls, clipboard history, an app launcher, tasks, reminders, a local calendar, snippets and wallpapers. Everything stays on your computer.",
-    "copyright": "Copyright 2026 Brim",
+    "copyright": "Copyright 2026 Kaustubh Chowdhury. All rights reserved.",
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
@@ -67,6 +67,11 @@
         "displayLanguageSelector": false
       }
     },
-    "publisher": "Brim"
+    "publisher": "Brim",
+    "licenseFile": "../LICENSE.txt",
+    "resources": {
+      "../LICENSE.txt": "LICENSE.txt",
+      "../THIRD-PARTY-NOTICES.txt": "THIRD-PARTY-NOTICES.txt"
+    }
   }
 }
