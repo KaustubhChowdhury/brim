@@ -1,0 +1,39 @@
+Brim — how to install
+==========================
+
+Brim is a small floating dock for Windows 10 (version 1809 or newer) and Windows 11.
+It puts music controls, clipboard history, an app launcher, tasks, a calendar, snippets and
+wallpapers one hover away at the top of your screen. Everything stays on your PC: no account,
+no cloud, no tracking.
+
+1. Run "Brim_<version>_x64-setup.exe".
+
+2. If Windows shows "Windows protected your PC":
+   this appears for apps from small publishers that haven't bought a code-signing
+   certificate yet. Click "More info", then "Run anyway".
+   (Optional) To check the file is exactly the one that was published, open PowerShell in
+   the download folder and run:
+       Get-FileHash .\Brim_*_x64-setup.exe -Algorithm SHA256
+   and compare the result with SHA256SUMS.txt.
+
+3. Choose whether to install just for you (no administrator rights needed) or for everyone
+   who uses this computer (needs administrator rights).
+
+4. Leave "Run Brim" ticked at the end. A short welcome screen asks whether you want
+   clipboard history and whether to start Brim when you sign in.
+
+Using it
+--------
+- Hover the top centre of your screen where the dock sits, or press Alt+Shift+Space.
+- Right-click the tray icon (near the clock) for Settings or to quit.
+- When a song starts, the dock briefly shows what's playing.
+
+Uninstalling
+------------
+Windows Settings > Apps > Installed apps > Brim > Uninstall.
+Tick "Delete the application data" if you also want your clipboard history, tasks and
+settings removed; leave it unticked to keep them for a later reinstall.
+
+If the installer can't set up Microsoft WebView2 (needed on some older Windows 10 PCs without
+internet access), install "Microsoft Edge WebView2 Runtime" from Microsoft and run the
+installer again.

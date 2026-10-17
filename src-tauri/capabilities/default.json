@@ -1,0 +1,11 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Minimal permissions for the dock and settings windows. All app functionality goes through typed app commands validated in Rust.",
+  "windows": ["dock", "settings", "widget"],
+  "permissions": [
+    "core:default",
+    "core:window:allow-start-dragging",
+    "log:allow-log"
+  ]
+}

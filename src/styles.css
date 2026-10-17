@@ -1,0 +1,918 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-accent: var(--accent);
+  --color-accent-contrast: var(--accent-contrast);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+  --color-line: var(--line);
+  --color-hover: var(--hover);
+  --color-field: var(--field);
+  --color-panel: var(--panel);
+  --color-danger: var(--danger);
+  --color-ok: var(--ok);
+  --color-warn: var(--warn);
+  --font-sans: "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "Cascadia Mono", Consolas, ui-monospace, monospace;
+}
+
+:root {
+  --accent: #7c8cff;
+  --accent-contrast: #ffffff;
+  --surface-alpha: 0.86;
+  --panel-alpha: 0.98;
+  --radius: 20px;
+  --dock-scale: 1;
+
+  /* Motion. Springs are sampled from SwiftUI's model (response, damping fraction) into
+     CSS linear() curves, so every animation follows real spring physics. */
+  /* smooth: response 0.42, damping 1.0 (critically damped; the island growing into the panel) */
+  --ease-smooth: linear(0, 0.0158, 0.0558, 0.1113, 0.1757, 0.2444, 0.3138, 0.3818, 0.4467, 0.5076, 0.5639, 0.6155, 0.6622, 0.7043, 0.7418, 0.7753, 0.8048, 0.8309, 0.8538, 0.8738, 0.8912, 0.9064, 0.9196, 0.931, 0.9409, 0.9494, 0.9567, 0.9631, 0.9685, 0.9731, 0.9771, 0.9805, 0.9834, 0.9859, 0.988, 0.9899, 0.9914, 0.9927, 0.9938, 0.9948, 0.9956, 0.9963, 0.9968, 0.9973, 0.9977, 0.9981, 0.9984, 0.9986, 1);
+  --dur-smooth: 600ms;
+  /* snappy: response 0.34, damping 0.82 (content, sliding indicators; ~1% overshoot) */
+  --ease-snappy: linear(0, 0.0148, 0.0537, 0.1093, 0.1758, 0.2485, 0.3238, 0.3988, 0.4716, 0.5406, 0.6049, 0.6638, 0.7171, 0.7647, 0.8067, 0.8434, 0.8751, 0.9022, 0.9251, 0.9442, 0.96, 0.9729, 0.9832, 0.9914, 0.9977, 1.0024, 1.0059, 1.0083, 1.0099, 1.0107, 1.0111, 1.011, 1.0107, 1.0101, 1.0094, 1.0086, 1.0078, 1.0069, 1.0061, 1.0053, 1.0046, 1.0039, 1.0033, 1.0028, 1.0023, 1.0019, 1.0015, 1.0012, 1);
+  --dur-snappy: 470ms;
+  /* bouncy: response 0.38, damping 0.68 (switch knobs, confirmations; ~5% overshoot) */
+  --ease-bouncy: linear(0, 0.0208, 0.0752, 0.1525, 0.2439, 0.3422, 0.4418, 0.5383, 0.6287, 0.711, 0.784, 0.8471, 0.9003, 0.944, 0.9789, 1.0058, 1.0257, 1.0395, 1.0483, 1.0529, 1.0543, 1.0531, 1.0502, 1.046, 1.041, 1.0357, 1.0303, 1.025, 1.0201, 1.0157, 1.0117, 1.0083, 1.0054, 1.003, 1.0011, 0.9997, 0.9986, 0.9979, 0.9974, 0.9971, 0.9971, 0.9971, 0.9973, 0.9975, 0.9978, 0.9981, 0.9984, 0.9986, 1);
+  --dur-bouncy: 620ms;
+  /* close: response 0.26, damping 1.0 (panel shrinking back into the island; 99% at 275 ms) */
+  --ease-close: linear(0, 0.0346, 0.1149, 0.2157, 0.3218, 0.424, 0.5177, 0.6006, 0.6723, 0.7332, 0.7842, 0.8264, 0.861, 0.8892, 0.912, 0.9303, 0.945, 0.9567, 0.966, 0.9733, 0.9791, 0.9837, 0.9873, 0.9901, 0.9923, 0.994, 0.9954, 0.9964, 0.9972, 0.9979, 0.9984, 0.9987, 1);
+  --dur-close: 380ms;
+  /* iOS-style ease-out for fades and colour changes */
+  --ease-out: cubic-bezier(0.32, 0.72, 0, 1);
+  --dur-fade: 220ms;
+  --dur-hover: 160ms;
+  /* scales movement / blur in enter animations (zeroed for reduced motion) */
+  --move: 1;
+  --blur: 1;
+}
+
+:root,
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --surface: rgb(22 22 28 / var(--surface-alpha));
+  /* No desktop blur is available behind the webview, so the panel stays more opaque for legibility. */
+  --surface-panel: rgb(22 22 28 / var(--panel-alpha));
+  --surface-solid: #16161c;
+  --panel: #131318;
+  --fg: #f2f2f7;
+  --muted: #a7a7b8;
+  --subtle: #75758a;
+  --line: rgb(255 255 255 / 0.09);
+  --hover: rgb(255 255 255 / 0.07);
+  --field: rgb(255 255 255 / 0.06);
+  --danger: #ff7272;
+  --ok: #4ade80;
+  --warn: #fbbf24;
+  --shadow-inner: inset 0 1px 0 rgb(255 255 255 / 0.08), inset 0 0 0 1px rgb(255 255 255 / 0.07);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --surface: rgb(250 250 252 / var(--surface-alpha));
+  --surface-panel: rgb(250 250 252 / var(--panel-alpha));
+  --surface-solid: #fafafc;
+  --panel: #f4f4f7;
+  --fg: #15151c;
+  --muted: #50505f;
+  --subtle: #82828f;
+  --line: rgb(0 0 0 / 0.1);
+  --hover: rgb(0 0 0 / 0.05);
+  --field: rgb(0 0 0 / 0.045);
+  --danger: #c62828;
+  --ok: #15803d;
+  --warn: #a16207;
+  --shadow-inner: inset 0 1px 0 rgb(255 255 255 / 0.9), inset 0 0 0 1px rgb(0 0 0 / 0.1);
+}
+
+/* Aqua: an aqua-to-white gradient with a glossy top sheen, like a water droplet. */
+:root[data-theme="aqua"] {
+  color-scheme: light;
+  --surface:
+    linear-gradient(180deg, rgb(255 255 255 / 0.55) 0%, rgb(255 255 255 / 0) 46%),
+    radial-gradient(120% 140% at 0% 0%, rgb(64 214 240 / var(--surface-alpha)) 0%, rgb(140 232 248 / var(--surface-alpha)) 38%, rgb(214 247 253 / var(--surface-alpha)) 70%, rgb(255 255 255 / var(--surface-alpha)) 100%);
+  --surface-panel:
+    linear-gradient(180deg, rgb(255 255 255 / 0.5) 0%, rgb(255 255 255 / 0) 18%),
+    linear-gradient(165deg, rgb(120 226 245 / var(--panel-alpha)) 0%, rgb(196 243 252 / var(--panel-alpha)) 26%, rgb(236 251 255 / var(--panel-alpha)) 52%, rgb(255 255 255 / var(--panel-alpha)) 100%);
+  --surface-solid: #f4fdff;
+  --panel: #eaf9fd;
+  --fg: #082733;
+  --muted: #33596a;
+  --subtle: #5f8595;
+  --line: rgb(8 90 115 / 0.13);
+  --hover: rgb(8 130 160 / 0.09);
+  --field: rgb(255 255 255 / 0.6);
+  --danger: #b42318;
+  --ok: #0b7a3e;
+  --warn: #8a5a00;
+  --shadow-inner: inset 0 1px 0 rgb(255 255 255 / 0.95), inset 0 0 0 1px rgb(12 120 150 / 0.2), inset 0 -10px 18px -12px rgb(8 145 178 / 0.35);
+}
+:root[data-theme="aqua"] .idle-line {
+  box-shadow:
+    0 0 0 1px rgb(12 120 150 / 0.3),
+    0 1px 4px rgb(8 60 80 / 0.25);
+}
+
+/* Midnight: near-black glass with an amber accent (pairs with the wide layout). */
+:root[data-theme="midnight"] {
+  color-scheme: dark;
+  --surface: linear-gradient(180deg, rgb(24 24 27 / var(--surface-alpha)) 0%, rgb(6 6 8 / var(--surface-alpha)) 100%);
+  --surface-panel: linear-gradient(180deg, rgb(18 18 21 / var(--panel-alpha)) 0%, rgb(4 4 6 / var(--panel-alpha)) 70%, rgb(0 0 0 / var(--panel-alpha)) 100%);
+  --surface-solid: #111114;
+  --panel: #0b0b0d;
+  --fg: #ececf1;
+  --muted: #9a9aa6;
+  --subtle: #6c6c78;
+  --line: rgb(255 255 255 / 0.07);
+  --hover: rgb(255 255 255 / 0.06);
+  --field: rgb(255 255 255 / 0.045);
+  --danger: #ff7b72;
+  --ok: #56d364;
+  --warn: #f2b84b;
+  --shadow-inner: inset 0 1px 0 rgb(255 255 255 / 0.06), inset 0 0 0 1px rgb(255 255 255 / 0.05);
+}
+
+/* Wide-layout tab highlight: a soft tinted pill behind the active tab. */
+.wide-tab-pill {
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+/* Desktop music widget: deep navy glass, independent of the dock theme. */
+.music-widget {
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.06) 0%, rgb(255 255 255 / 0) 40%),
+    linear-gradient(160deg, rgb(36 46 66 / 0.94) 0%, rgb(22 30 46 / 0.95) 55%, rgb(16 22 36 / 0.96) 100%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.1),
+    inset 0 0 0 1px rgb(255 255 255 / 0.08),
+    0 8px 24px rgb(0 0 0 / 0.35);
+  color: #fff;
+}
+
+/* Search field: a quiet filled well that lights up on focus. */
+.search-field {
+  background: var(--field);
+  box-shadow: inset 0 0 0 1px var(--line);
+  transition: box-shadow var(--dur-hover) var(--ease-out), background-color var(--dur-hover) var(--ease-out);
+}
+.search-field:focus-within {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+/* Wallpaper carousel: slanted cards glide into place around the selected picture. */
+.carousel-card {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  overflow: hidden;
+  border-radius: 14px;
+  background: var(--field);
+  box-shadow: 0 10px 28px rgb(0 0 0 / 0.35);
+  transition:
+    transform var(--dur-snappy) var(--ease-snappy),
+    width var(--dur-snappy) var(--ease-snappy),
+    height var(--dur-snappy) var(--ease-snappy),
+    opacity var(--dur-fade) var(--ease-out);
+  will-change: transform, width, height, opacity;
+}
+.carousel-actions {
+  background: linear-gradient(to top, rgb(0 0 0 / 0.55), transparent);
+  opacity: 0;
+  transition: opacity var(--dur-hover) var(--ease-out);
+}
+.carousel-card:hover .carousel-actions,
+.carousel:focus-visible .carousel-actions {
+  opacity: 1;
+}
+
+/* Stats gauges glide to each new reading. */
+.gauge-arc {
+  transition:
+    stroke-dashoffset var(--dur-smooth) var(--ease-snappy),
+    stroke var(--dur-fade) var(--ease-out);
+}
+
+:root[data-motion="reduced"] {
+  /* Fades only: no movement, scaling, blur or bounce. */
+  --ease-smooth: var(--ease-out);
+  --ease-snappy: var(--ease-out);
+  --ease-bouncy: var(--ease-out);
+  --ease-close: var(--ease-out);
+  --dur-smooth: 200ms;
+  --dur-snappy: 180ms;
+  --dur-bouncy: 180ms;
+  --dur-close: 160ms;
+  --dur-fade: 160ms;
+  --move: 0;
+  --blur: 0;
+}
+:root[data-motion="none"] {
+  --dur-smooth: 0ms;
+  --dur-snappy: 0ms;
+  --dur-bouncy: 0ms;
+  --dur-close: 0ms;
+  --dur-fade: 0ms;
+  --dur-hover: 0ms;
+  --move: 0;
+  --blur: 0;
+}
+:root[data-motion="none"] *,
+:root[data-motion="none"] *::before,
+:root[data-motion="none"] *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--fg);
+  font-size: 13px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* The dock window is transparent: only the island/panel paints. */
+html.is-dock,
+html.is-dock body {
+  background: transparent;
+  overflow: hidden;
+  user-select: none;
+}
+
+html.is-settings body {
+  background: var(--panel);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+button {
+  cursor: default;
+}
+
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 10px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--subtle);
+  background-clip: padding-box;
+  border: 3px solid transparent;
+}
+
+.surface {
+  background: var(--surface);
+  box-shadow: var(--shadow-inner);
+}
+
+.surface-panel {
+  background: var(--surface-panel);
+  box-shadow: var(--shadow-inner);
+}
+
+.dock-stage {
+  width: calc(100vw / var(--dock-scale));
+  height: calc(100vh / var(--dock-scale));
+  zoom: var(--dock-scale);
+  position: relative;
+}
+
+/* ---------- Dock morph: the island grows into the panel and back ---------- */
+
+.morph {
+  background: var(--surface-panel);
+  box-shadow: var(--shadow-inner);
+  transition:
+    clip-path var(--dur-smooth) var(--ease-smooth),
+    background-color var(--dur-fade) var(--ease-out);
+}
+/* While island-shaped, match the island's translucency so the hand-off is seamless. */
+.morph[data-phase="opening"],
+.morph[data-phase="closing"] {
+  background: var(--surface);
+}
+.morph[data-phase="opening"] {
+  transition: none;
+}
+.morph[data-phase="closing"] {
+  transition:
+    clip-path var(--dur-close) var(--ease-close),
+    background-color var(--dur-close) var(--ease-out);
+}
+
+/* Panel content arrives just behind the shape: it rises, sharpens and fades in. */
+.morph-content {
+  transition:
+    opacity 280ms var(--ease-out) 60ms,
+    transform var(--dur-snappy) var(--ease-snappy) 40ms,
+    filter 320ms var(--ease-out) 40ms;
+}
+.morph[data-phase="opening"] .morph-content {
+  opacity: 0;
+  transform: translateY(calc(var(--move) * var(--enter-y, -10px))) scale(calc(1 - var(--move) * 0.035));
+  filter: blur(calc(var(--blur) * 6px));
+  transition: none;
+}
+.morph[data-phase="closing"] .morph-content {
+  opacity: 0;
+  transform: scale(calc(1 - var(--move) * 0.03));
+  filter: blur(calc(var(--blur) * 4px));
+  transition:
+    opacity 120ms var(--ease-out),
+    transform 200ms var(--ease-out),
+    filter 160ms var(--ease-out);
+}
+
+/* ---------- Utility switching: crossfade with a short directional slide ---------- */
+
+.swap-enter {
+  animation: swap-enter var(--dur-snappy) var(--ease-snappy) both;
+}
+.swap-leave {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  animation: swap-leave 180ms var(--ease-out) both;
+}
+@keyframes swap-enter {
+  from {
+    opacity: 0;
+    transform: translateX(calc(var(--move) * var(--swap-dir, 1) * 14px));
+    filter: blur(calc(var(--blur) * 3px));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+@keyframes swap-leave {
+  to {
+    opacity: 0;
+    transform: translateX(calc(var(--move) * var(--swap-dir, 1) * -10px));
+    filter: blur(calc(var(--blur) * 3px));
+  }
+}
+
+/* ---------- Entrances ---------- */
+
+.fade-in {
+  animation: rise-in var(--dur-snappy) var(--ease-snappy) both;
+}
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(calc(var(--move) * 6px)) scale(calc(1 - var(--move) * 0.015));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* List rows rise in, cascading over the first dozen. Rows that mount later animate on their
+   own, and rows already on screen never replay. */
+.row-in {
+  animation: rise-in 380ms var(--ease-snappy) both;
+  animation-delay: calc(var(--i, 0) * 22ms);
+}
+.row-in:nth-child(2) {
+  --i: 1;
+}
+.row-in:nth-child(3) {
+  --i: 2;
+}
+.row-in:nth-child(4) {
+  --i: 3;
+}
+.row-in:nth-child(5) {
+  --i: 4;
+}
+.row-in:nth-child(6) {
+  --i: 5;
+}
+.row-in:nth-child(7) {
+  --i: 6;
+}
+.row-in:nth-child(8) {
+  --i: 7;
+}
+.row-in:nth-child(9) {
+  --i: 8;
+}
+.row-in:nth-child(10) {
+  --i: 9;
+}
+.row-in:nth-child(11) {
+  --i: 10;
+}
+.row-in:nth-child(12) {
+  --i: 11;
+}
+
+/* Popovers grow from their anchor. */
+.pop-menu {
+  transform-origin: var(--origin, top right);
+  animation: pop-menu var(--dur-snappy) var(--ease-snappy) both;
+}
+.pop-menu[data-state="exit"] {
+  animation: pop-menu-out 140ms var(--ease-out) both;
+}
+@keyframes pop-menu {
+  from {
+    opacity: 0;
+    transform: scale(calc(1 - var(--move) * 0.06)) translateY(calc(var(--move) * -4px));
+    filter: blur(calc(var(--blur) * 2px));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+@keyframes pop-menu-out {
+  to {
+    opacity: 0;
+    transform: scale(calc(1 - var(--move) * 0.04));
+  }
+}
+
+/* First-run welcome: each block rises in, one after another. */
+.welcome > * {
+  animation: rise-in 520ms var(--ease-snappy) both;
+}
+.welcome > :nth-child(2) {
+  animation-delay: 45ms;
+}
+.welcome > :nth-child(3) {
+  animation-delay: 90ms;
+}
+.welcome > :nth-child(4) {
+  animation-delay: 135ms;
+}
+.welcome > :nth-child(5) {
+  animation-delay: 180ms;
+}
+.welcome > :nth-child(6) {
+  animation-delay: 225ms;
+}
+.welcome > :nth-child(7) {
+  animation-delay: 270ms;
+}
+.welcome > :nth-child(8) {
+  animation-delay: 315ms;
+}
+.welcome > :nth-child(9) {
+  animation-delay: 360ms;
+}
+.welcome > :nth-child(10) {
+  animation-delay: 405ms;
+}
+.welcome > :nth-child(11) {
+  animation-delay: 450ms;
+}
+.welcome > :nth-child(12) {
+  animation-delay: 495ms;
+}
+
+/* Small confirmations ("Copied", check marks) pop with a little bounce. */
+.pop {
+  animation: pop var(--dur-bouncy) var(--ease-bouncy) both;
+}
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(calc(1 - var(--move) * 0.5));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* The island appears once at startup. */
+.island-in {
+  animation: island-in var(--dur-snappy) var(--ease-snappy) both;
+}
+@keyframes island-in {
+  from {
+    opacity: 0;
+    transform: scale(calc(1 - var(--move) * 0.08));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- Idle forms: the island vanishes to a point or folds into a line ---------- */
+
+/* Line form: a thin bar on the island's top edge (top 3px, 100x4, like a home indicator). */
+.idle-line {
+  position: absolute;
+  top: 3px;
+  left: 50%;
+  width: 100px;
+  height: 4px;
+  margin-left: -50px;
+  border-radius: 2px;
+  background: var(--surface);
+  box-shadow:
+    0 0 0 1px rgb(255 255 255 / 0.16),
+    0 1px 4px rgb(0 0 0 / 0.35);
+  transform-origin: center top;
+  animation: line-settle var(--dur-bouncy) var(--ease-bouncy) both;
+  transition:
+    transform var(--dur-bouncy) var(--ease-bouncy),
+    background-color var(--dur-hover) var(--ease-out);
+}
+[role="button"]:hover > .idle-line {
+  transform: scaleX(calc(1 + var(--move) * 0.12)) scaleY(1.5);
+  background: var(--accent);
+}
+@keyframes line-settle {
+  from {
+    transform: scaleX(calc(1 + var(--move) * 0.25));
+  }
+  to {
+    transform: none;
+  }
+}
+
+/* Island grows out of its idle form... */
+.island-grow-vanish,
+.island-grow-line {
+  animation: var(--dur-snappy) var(--ease-snappy) both;
+}
+.island-grow-vanish {
+  animation-name: island-grow-vanish;
+}
+.island-grow-line {
+  animation-name: island-grow-line;
+}
+.island-grow-vanish > *,
+.island-grow-line > * {
+  animation: rise-in 360ms var(--ease-snappy) 70ms both;
+}
+@keyframes island-grow-vanish {
+  from {
+    clip-path: inset(50% 50% 50% 50% round 0);
+    opacity: 0;
+  }
+  35% {
+    opacity: 1;
+  }
+  to {
+    clip-path: inset(0 round min(var(--radius), 26px));
+    opacity: 1;
+  }
+}
+@keyframes island-grow-line {
+  from {
+    clip-path: inset(3px calc(50% - 50px) calc(100% - 7px) calc(50% - 50px) round 2px);
+  }
+  to {
+    clip-path: inset(0 round min(var(--radius), 26px));
+  }
+}
+
+/* ...and collapses back into it when the cursor leaves. */
+.island-shrink-vanish,
+.island-shrink-line {
+  animation: var(--dur-close) var(--ease-close) both;
+}
+.island-shrink-vanish {
+  animation-name: island-shrink-vanish;
+}
+.island-shrink-line {
+  animation-name: island-shrink-line;
+}
+.island-shrink-vanish > *,
+.island-shrink-line > * {
+  animation: fade-out 120ms var(--ease-out) both;
+}
+@keyframes island-shrink-vanish {
+  from {
+    clip-path: inset(0 round min(var(--radius), 26px));
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  to {
+    clip-path: inset(50% 50% 50% 50% round 0);
+    opacity: 0;
+  }
+}
+@keyframes island-shrink-line {
+  from {
+    clip-path: inset(0 round min(var(--radius), 26px));
+  }
+  to {
+    clip-path: inset(3px calc(50% - 50px) calc(100% - 7px) calc(50% - 50px) round 2px);
+  }
+}
+@keyframes fade-out {
+  to {
+    opacity: 0;
+    transform: scale(calc(1 - var(--move) * 0.1));
+  }
+}
+
+/* ---------- Live activities: the island grows from its centre into a wider pill ---------- */
+
+.activity-pill {
+  border-radius: min(var(--radius), 26px);
+  box-shadow: var(--shadow-inner);
+}
+.activity-grow-island,
+.activity-grow-vanish,
+.activity-grow-line {
+  animation: var(--dur-smooth) var(--ease-snappy) both;
+}
+.activity-grow-island {
+  animation-name: activity-from-island;
+}
+.activity-grow-vanish {
+  animation-name: activity-from-vanish;
+}
+.activity-grow-line {
+  animation-name: activity-from-line;
+}
+.activity-grow-island .activity-content,
+.activity-grow-vanish .activity-content,
+.activity-grow-line .activity-content {
+  animation: activity-content-in 420ms var(--ease-out) 90ms both;
+}
+.activity-shrink-island,
+.activity-shrink-vanish,
+.activity-shrink-line {
+  animation: var(--dur-close) var(--ease-close) both;
+}
+.activity-shrink-island {
+  animation-name: activity-to-island;
+}
+.activity-shrink-vanish {
+  animation-name: activity-to-vanish;
+}
+.activity-shrink-line {
+  animation-name: activity-to-line;
+}
+.activity-shrink-island .activity-content,
+.activity-shrink-vanish .activity-content,
+.activity-shrink-line .activity-content {
+  animation: fade-out 120ms var(--ease-out) both;
+}
+@keyframes activity-from-island {
+  from {
+    clip-path: inset(0 calc(50% - 98px) calc(100% - 52px) calc(50% - 98px) round min(var(--radius), 26px));
+  }
+  to {
+    clip-path: inset(0 round min(var(--radius), 26px));
+  }
+}
+@keyframes activity-to-island {
+  from {
+    clip-path: inset(0 round min(var(--radius), 26px));
+  }
+  to {
+    clip-path: inset(0 calc(50% - 98px) calc(100% - 52px) calc(50% - 98px) round min(var(--radius), 26px));
+  }
+}
+@keyframes activity-from-vanish {
+  from {
+    clip-path: inset(26px 50% calc(100% - 26px) 50% round 0);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  to {
+    clip-path: inset(0 round min(var(--radius), 26px));
+    opacity: 1;
+  }
+}
+@keyframes activity-to-vanish {
+  from {
+    clip-path: inset(0 round min(var(--radius), 26px));
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  to {
+    clip-path: inset(26px 50% calc(100% - 26px) 50% round 0);
+    opacity: 0;
+  }
+}
+@keyframes activity-from-line {
+  from {
+    clip-path: inset(3px calc(50% - 50px) calc(100% - 7px) calc(50% - 50px) round 2px);
+  }
+  to {
+    clip-path: inset(0 round min(var(--radius), 26px));
+  }
+}
+@keyframes activity-to-line {
+  from {
+    clip-path: inset(0 round min(var(--radius), 26px));
+  }
+  to {
+    clip-path: inset(3px calc(50% - 50px) calc(100% - 7px) calc(50% - 50px) round 2px);
+  }
+}
+@keyframes activity-content-in {
+  from {
+    opacity: 0;
+    transform: scale(calc(1 - var(--move) * 0.08));
+    filter: blur(calc(var(--blur) * 5px));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+/* Volume level glides to each new value. */
+.volume-fill {
+  transition:
+    transform var(--dur-snappy) var(--ease-snappy),
+    background-color var(--dur-fade) var(--ease-out);
+  will-change: transform;
+}
+
+/* ---------- Smoothness at high refresh rates ----------
+   Everything that moves animates transform / opacity / filter / clip-path on its own layer,
+   so frames are produced by the GPU compositor at the display's full rate (e.g. 144 Hz)
+   instead of waiting on layout. */
+.morph,
+.morph-content,
+.activity-pill,
+.activity-content,
+[class*="island-grow-"],
+[class*="island-shrink-"],
+.swap-enter,
+.swap-leave,
+.pop-menu,
+.slide-indicator,
+.wide-tab-pill {
+  will-change: transform, opacity, clip-path;
+}
+.dock-stage {
+  /* isolate the dock in its own compositing layer */
+  transform: translateZ(0);
+}
+
+/* ---------- Startup intro: point → line → bar, then the icons drop in one by one ---------- */
+
+.island-intro {
+  animation: island-intro 760ms both;
+  will-change: clip-path, opacity;
+}
+@keyframes island-intro {
+  0% {
+    clip-path: inset(calc(50% - 2px) 50% calc(50% - 2px) 50% round 2px);
+    opacity: 0;
+    animation-timing-function: var(--ease-out);
+  }
+  8% {
+    opacity: 1;
+  }
+  /* the point stretches into a thin line across the full width... */
+  42% {
+    clip-path: inset(calc(50% - 2px) 0 calc(50% - 2px) 0 round 2px);
+    opacity: 1;
+    animation-timing-function: var(--ease-snappy);
+  }
+  /* ...then opens vertically into the bar */
+  100% {
+    clip-path: inset(0 round min(var(--radius), 26px));
+    opacity: 1;
+  }
+}
+/* Icons fall in from above the bar's top edge, one after another, with a small bounce.
+   Fill mode `backwards` only holds the start state during the delay, so it never blocks the
+   press effect afterwards. */
+.island-intro > * {
+  animation: icon-drop 640ms var(--ease-bouncy) backwards;
+  animation-delay: calc(560ms + var(--n, 0) * 90ms);
+  will-change: transform, opacity;
+}
+.island-intro > :nth-child(2) {
+  --n: 1;
+}
+.island-intro > :nth-child(3) {
+  --n: 2;
+}
+.island-intro > :nth-child(4) {
+  --n: 3;
+}
+@keyframes icon-drop {
+  from {
+    opacity: 0;
+    transform: translateY(calc(var(--move) * -34px)) scale(calc(1 - var(--move) * 0.25));
+  }
+  45% {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- Press feedback ---------- */
+
+.press {
+  transition:
+    transform var(--dur-bouncy) var(--ease-bouncy),
+    background-color var(--dur-hover) var(--ease-out),
+    color var(--dur-hover) var(--ease-out),
+    opacity var(--dur-hover) var(--ease-out),
+    box-shadow var(--dur-hover) var(--ease-out);
+}
+.press:active:not(:disabled) {
+  transform: scale(calc(1 - var(--move) * 0.06));
+  transition-duration: 90ms;
+  transition-timing-function: var(--ease-out);
+}
+.press-soft:active:not(:disabled) {
+  transform: scale(calc(1 - var(--move) * 0.025));
+}
+
+/* Sliding selection indicators (segmented controls, active slot, settings nav). */
+.slide-indicator {
+  transition:
+    transform var(--dur-snappy) var(--ease-snappy),
+    width var(--dur-snappy) var(--ease-snappy),
+    height var(--dur-snappy) var(--ease-snappy),
+    opacity var(--dur-fade) var(--ease-out);
+}
+
+/* Switch: track colour fades, knob springs across and stretches while pressed (iOS). */
+.toggle {
+  transition: background-color var(--dur-fade) var(--ease-out);
+}
+.toggle-knob {
+  transition:
+    transform var(--dur-bouncy) var(--ease-bouncy),
+    width var(--dur-snappy) var(--ease-snappy);
+}
+.toggle[aria-checked="true"] .toggle-knob {
+  transform: translateX(18px);
+}
+.toggle:active:not(:disabled) .toggle-knob {
+  width: 20px;
+}
+.toggle[aria-checked="true"]:active:not(:disabled) .toggle-knob {
+  transform: translateX(14px);
+}
+
+/* Progress fill interpolated between twice-a-second updates. */
+.progress-fill {
+  transition: transform 500ms linear;
+  will-change: transform;
+}
+
+.eq-bar {
+  animation: eq 900ms ease-in-out infinite;
+  transform-origin: bottom;
+}
+@keyframes eq {
+  0%,
+  100% {
+    transform: scaleY(0.35);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+:root[data-motion="none"] .eq-bar,
+:root[data-motion="reduced"] .eq-bar {
+  animation: none;
+  transform: scaleY(0.7);
+}
