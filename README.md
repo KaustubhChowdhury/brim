@@ -71,3 +71,7 @@ Design principles:
 - [docs/PRIVACY.md](docs/PRIVACY.md): what is stored, where, and how to delete it
 - [docs/COMPATIBILITY.md](docs/COMPATIBILITY.md): Windows versions, media players, known limitations
 - [docs/QA-CHECKLIST.md](docs/QA-CHECKLIST.md): automated coverage, what was verified, and the manual test matrix
+
+## License
+
+[MIT](LICENSE) © 2026 Kaustubh Chowdhury
