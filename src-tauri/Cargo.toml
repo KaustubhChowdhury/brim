@@ -1,9 +1,8 @@
 [package]
 name = "wisp-dock"
-version = "1.6.1"
-description = "Brim - a local-first floating utility dock for Windows"
-authors = ["Kaustubh Chowdhury"]
-license-file = "../LICENSE.txt"
+version = "1.6.0"
+description = "Wisp Dock - a local-first floating utility dock for Windows"
+authors = ["Wisp Dock contributors"]
 edition = "2021"
 publish = false
 
