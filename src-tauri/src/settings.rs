@@ -12,6 +12,8 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Hash)]
 #[serde(rename_all = "lowercase")]
 pub enum Utility {
+    /// Clock, calendar, system info, live usage and now playing at a glance.
+    Dashboard,
     Music,
     Clipboard,
     Apps,
@@ -32,7 +34,8 @@ pub enum Utility {
 }
 
 impl Utility {
-    pub const ALL: [Utility; 12] = [
+    pub const ALL: [Utility; 13] = [
+        Utility::Dashboard,
         Utility::Music,
         Utility::Clipboard,
         Utility::Apps,
@@ -49,6 +52,7 @@ impl Utility {
 
     pub fn as_str(self) -> &'static str {
         match self {
+            Utility::Dashboard => "dashboard",
             Utility::Music => "music",
             Utility::Clipboard => "clipboard",
             Utility::Apps => "apps",
@@ -70,6 +74,7 @@ impl Utility {
 
     pub fn label(self) -> &'static str {
         match self {
+            Utility::Dashboard => "Dashboard",
             Utility::Music => "Music",
             Utility::Clipboard => "Clipboard",
             Utility::Apps => "Apps",
@@ -255,7 +260,7 @@ impl Default for Settings {
             tray_click_action: TrayClickAction::Toggle,
             defaults_version: DEFAULTS_VERSION,
             restore_last_utility: true,
-            last_utility: Utility::Controls,
+            last_utility: Utility::Dashboard,
             onboarding_completed: false,
             // Capture is OFF until the user makes an explicit choice during first run.
             clipboard_capture: CaptureState::Off,

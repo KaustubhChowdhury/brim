@@ -27,6 +27,10 @@ import type {
   TaskInput,
   TaskPatch,
   PowerAction,
+  QuickPage,
+  QuickSetting,
+  QuickState,
+  SystemInfo,
   SystemStats,
   Utility,
   VolumeState,
@@ -118,6 +122,12 @@ export const api = {
     set: (level: number) => call<void>("volume_set", { level: Math.min(1, Math.max(0, level)) }),
     mute: (muted: boolean) => call<void>("volume_mute", { muted }),
   },
+  quick: {
+    state: () => call<QuickState>("quick_state"),
+    set: (setting: QuickSetting, on: boolean) => call<QuickState>("quick_set", { setting, on }),
+    setOutput: (id: string) => call<QuickState>("quick_set_output", { id }),
+    open: (page: QuickPage) => call<void>("quick_open", { page }),
+  },
   search: {
     web: (engine: "youtube" | "google", query: string) => call<void>("web_search", { engine, query }),
   },
@@ -133,6 +143,7 @@ export const api = {
   },
   system: {
     stats: () => call<SystemStats>("system_stats"),
+    info: () => call<SystemInfo>("system_info"),
     power: (action: PowerAction) => call<void>("power_action", { action }),
   },
   tasks: {

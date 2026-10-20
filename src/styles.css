@@ -916,3 +916,234 @@ select {
   animation: none;
   transform: scaleY(0.7);
 }
+
+/* ---------- Controls tab: Android-style quick settings ---------- */
+
+:root {
+  /* Tiles that are on take a soft pastel of the accent with dark text, like Material You. */
+  --qs-on: color-mix(in srgb, var(--accent) 58%, #ffffff);
+  --qs-on-fg: #14130f;
+}
+
+.qs-tile {
+  background: var(--field);
+  box-shadow: inset 0 0 0 1px var(--line);
+  color: var(--fg);
+  transition:
+    background-color var(--dur-fade) var(--ease-out),
+    color var(--dur-fade) var(--ease-out),
+    box-shadow var(--dur-fade) var(--ease-out),
+    opacity var(--dur-fade) var(--ease-out);
+}
+.qs-tile .qs-detail {
+  color: var(--muted);
+  transition: color var(--dur-fade) var(--ease-out);
+}
+.qs-tile[data-on="true"] {
+  background: var(--qs-on);
+  box-shadow: none;
+  color: var(--qs-on-fg);
+}
+.qs-tile[data-on="true"] .qs-detail {
+  color: color-mix(in srgb, var(--qs-on-fg) 68%, transparent);
+}
+.qs-tile > button:hover:not(:disabled) {
+  background-color: rgb(127 127 127 / 0.08);
+}
+.qs-more {
+  background: rgb(127 127 127 / 0.1);
+}
+
+/* Volume: a thick pill whose fill keeps room for the icon even at 0%. */
+.qs-volume {
+  background: var(--field);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.qs-volume-fill {
+  background: var(--qs-on);
+  transform: translateX(calc((var(--level) - 1) * (100% - 2.5rem)));
+}
+.qs-volume-fill.qs-muted {
+  background: color-mix(in srgb, var(--fg) 22%, transparent);
+}
+.qs-volume-icon {
+  color: var(--qs-on-fg);
+}
+.qs-volume:has(.qs-muted) .qs-volume-icon {
+  color: var(--fg);
+}
+
+/* Now playing: tinted with the album art, always light text. */
+.qs-media {
+  --tint: color-mix(in srgb, var(--accent) 45%, #121212);
+  color: #fff;
+  background:
+    radial-gradient(120% 140% at 0% 0%, color-mix(in srgb, var(--tint) 100%, #fff 10%) 0%, transparent 60%),
+    linear-gradient(135deg, var(--tint) 0%, color-mix(in srgb, var(--tint) 70%, #000) 100%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08), inset 0 0 0 1px rgb(255 255 255 / 0.06);
+  transition: background 600ms var(--ease-out);
+}
+.qs-media-empty {
+  --tint: color-mix(in srgb, var(--fg) 8%, #101012);
+}
+.qs-play {
+  background: color-mix(in srgb, var(--tint) 30%, #ffe9e0);
+  color: color-mix(in srgb, var(--tint) 80%, #000);
+  box-shadow: 0 6px 16px rgb(0 0 0 / 0.3);
+  transition:
+    transform var(--dur-bouncy) var(--ease-bouncy),
+    border-radius var(--dur-snappy) var(--ease-snappy),
+    opacity var(--dur-hover) var(--ease-out);
+}
+
+/* Squiggly progress (Android 13+). */
+.qs-wave-track > * {
+  position: absolute;
+  inset: 0;
+}
+.qs-wave-rest::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 50%;
+  height: 3px;
+  margin-top: -1.5px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.28);
+}
+.qs-wave,
+.qs-wave-flat {
+  position: absolute;
+  inset-inline: 0;
+  top: 50%;
+  transition: opacity 300ms var(--ease-out);
+}
+.qs-wave {
+  height: 12px;
+  margin-top: -6px;
+  background: #fff;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 12'%3E%3Cpath d='M0 6 Q6 1 12 6 T24 6' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E")
+    0 50% / 24px 12px repeat-x;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 12'%3E%3Cpath d='M0 6 Q6 1 12 6 T24 6' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E")
+    0 50% / 24px 12px repeat-x;
+  animation: qs-wave 1.2s linear infinite;
+}
+.qs-wave.qs-wave-paused {
+  opacity: 0;
+  animation-play-state: paused;
+}
+.qs-wave-flat {
+  height: 3px;
+  margin-top: -1.5px;
+  border-radius: 999px;
+  background: #fff;
+}
+@keyframes qs-wave {
+  to {
+    -webkit-mask-position: 24px 50%;
+    mask-position: 24px 50%;
+  }
+}
+.qs-wave-head {
+  position: absolute;
+  inset: 0;
+}
+.qs-wave-head > span {
+  position: absolute;
+  left: -2px;
+  top: 50%;
+  width: 4px;
+  height: 16px;
+  margin-top: -8px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 0 0 2px rgb(0 0 0 / 0.12);
+}
+.qs-wave-smooth .qs-wave-rest,
+.qs-wave-smooth .qs-wave-played {
+  transition: clip-path 500ms linear;
+}
+.qs-wave-smooth .qs-wave-head {
+  transition: transform 500ms linear;
+}
+:root[data-motion="none"] .qs-wave,
+:root[data-motion="reduced"] .qs-wave {
+  animation: none;
+}
+
+/* Wide-layout tabs: icon over label, a hairline beneath, and an accent underline on the active one. */
+.wide-tabs {
+  box-shadow: inset 0 -1px 0 var(--line);
+}
+.wide-tab-line {
+  background: var(--accent);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+/* ---------- Dashboard ---------- */
+
+.dash-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 112px 1fr 1fr 92px 196px;
+  grid-template-rows: 92px minmax(0, 1fr);
+  grid-template-areas:
+    "greet greet sys  sys  music"
+    "clock cal   cal  bars music";
+  container-type: inline-size;
+}
+/* The compact panel is narrow: stack the cards and let the tab scroll. */
+@media (max-width: 560px) {
+  .dash-grid {
+    overflow-y: auto;
+    grid-template-columns: 96px 1fr 76px;
+    grid-template-rows: 84px 84px 230px 220px;
+    grid-template-areas:
+      "greet greet greet"
+      "sys   sys   sys"
+      "clock cal   bars"
+      "music music music";
+  }
+}
+.dash-card {
+  min-width: 0;
+  min-height: 0;
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--accent) 5%, var(--field));
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.dash-avatar {
+  background: linear-gradient(140deg, var(--accent), color-mix(in srgb, var(--accent) 45%, #3a1d5c));
+  color: var(--accent-contrast);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+.dash-dot {
+  opacity: 0.35;
+  transition: opacity 400ms var(--ease-out);
+}
+.dash-dot.dash-dot-on {
+  opacity: 1;
+}
+.dash-bar {
+  background: linear-gradient(0deg, var(--accent), color-mix(in srgb, var(--accent) 55%, #fff));
+  transform-origin: bottom;
+  transition: transform 900ms var(--ease-snappy);
+  will-change: transform;
+}
+.dash-disc {
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent),
+    0 10px 26px rgb(0 0 0 / 0.4);
+}
+.dash-disc-spin {
+  animation: dash-spin 14s linear infinite;
+}
+@keyframes dash-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+:root[data-motion="none"] .dash-disc-spin,
+:root[data-motion="reduced"] .dash-disc-spin {
+  animation: none;
+}

@@ -36,6 +36,64 @@ pub struct SystemStats {
     pub uptime_secs: u64,
 }
 
+/// Who and what this PC is, for the dashboard. Read once when the dashboard opens.
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SystemInfo {
+    /// The account's full name as Windows shows it, else the sign-in name.
+    pub user_name: String,
+    /// "Windows 11" or "Windows 10".
+    pub os_name: String,
+    /// Feature update, e.g. "25H2" (empty if unknown).
+    pub os_version: String,
+    pub computer_name: String,
+}
+
+pub fn info() -> SystemInfo {
+    use windows::core::w;
+    let login = std::env::var("USERNAME").unwrap_or_default();
+    let build = reg_string(w!("CurrentBuild")).and_then(|b| b.parse::<u32>().ok()).unwrap_or(0);
+    SystemInfo {
+        user_name: full_name(&login).unwrap_or(login),
+        // ProductName still says "Windows 10" on Windows 11; the build number is what tells them apart.
+        os_name: if build >= 22000 { "Windows 11" } else { "Windows 10" }.into(),
+        os_version: reg_string(w!("DisplayVersion")).unwrap_or_default(),
+        computer_name: std::env::var("COMPUTERNAME").unwrap_or_default(),
+    }
+}
+
+/// A REG_SZ value under `HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion`.
+fn reg_string(value: windows::core::PCWSTR) -> Option<String> {
+    use windows::Win32::System::Registry::{RegGetValueW, HKEY_LOCAL_MACHINE, RRF_RT_REG_SZ};
+    let key = windows::core::w!(r"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
+    let mut buf = [0u16; 128];
+    let mut size = std::mem::size_of_val(&buf) as u32;
+    unsafe { RegGetValueW(HKEY_LOCAL_MACHINE, key, value, RRF_RT_REG_SZ, None, Some(buf.as_mut_ptr().cast()), Some(&mut size)) }
+        .ok()
+        .ok()?;
+    let len = buf.iter().position(|&c| c == 0).unwrap_or(buf.len());
+    Some(String::from_utf16_lossy(&buf[..len])).filter(|s| !s.is_empty())
+}
+
+/// The local account's full name (for Microsoft accounts, the name on the account).
+fn full_name(login: &str) -> Option<String> {
+    use windows::Win32::NetworkManagement::NetManagement::{NetApiBufferFree, NetUserGetInfo, USER_INFO_10};
+    if login.is_empty() {
+        return None;
+    }
+    let user = windows::core::HSTRING::from(login);
+    let mut buf: *mut u8 = std::ptr::null_mut();
+    unsafe {
+        if NetUserGetInfo(windows::core::PCWSTR::null(), &user, 10, &mut buf) != 0 || buf.is_null() {
+            return None;
+        }
+        let info = &*(buf as *const USER_INFO_10);
+        let name = info.usri10_full_name.to_string().ok().map(|n| n.trim().to_string()).filter(|n| !n.is_empty());
+        NetApiBufferFree(Some(buf as *const std::ffi::c_void));
+        name
+    }
+}
+
 fn ft(t: FILETIME) -> u64 {
     ((t.dwHighDateTime as u64) << 32) | t.dwLowDateTime as u64
 }
@@ -157,5 +215,15 @@ mod tests {
         let a: PowerAction = serde_json::from_str("\"signout\"").unwrap();
         assert_eq!(a, PowerAction::Signout);
         assert!(serde_json::from_str::<PowerAction>("\"format\"").is_err());
+    }
+}
+
+#[cfg(test)]
+mod info_tests {
+    /// Reads this PC's name and Windows version: `cargo test live_system_info -- --ignored --nocapture`.
+    #[test]
+    #[ignore]
+    fn live_system_info() {
+        println!("{:#?}", super::info());
     }
 }

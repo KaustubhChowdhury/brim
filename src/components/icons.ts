@@ -15,6 +15,7 @@ import {
   Headphones,
   Heart,
   Image,
+  LayoutDashboard,
   LayoutGrid,
   ListTodo,
   Music,
@@ -54,6 +55,7 @@ export const SLOT_ICONS: Record<string, LucideIcon> = {
 };
 
 export const UTILITY_ICON: Record<Utility, LucideIcon> = {
+  dashboard: LayoutDashboard,
   music: Music,
   clipboard: Clipboard,
   apps: LayoutGrid,
@@ -69,6 +71,7 @@ export const UTILITY_ICON: Record<Utility, LucideIcon> = {
 };
 
 export const UTILITY_LABEL: Record<Utility, string> = {
+  dashboard: "Dashboard",
   music: "Music",
   clipboard: "Clipboard",
   apps: "Apps",

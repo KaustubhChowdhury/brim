@@ -1,6 +1,6 @@
 [package]
 name = "wisp-dock"
-version = "1.6.0"
+version = "1.7.0"
 description = "Brim - a local-first floating utility dock for Windows"
 authors = ["Kaustubh Chowdhury"]
 license = "MIT"
@@ -33,15 +33,20 @@ image = { version = "0.25", default-features = false, features = ["jpeg", "png",
 [dependencies.windows]
 version = "0.62"
 features = [
+  "Devices_Radios",
   "Foundation",
   "Foundation_Collections",
   "Media_Control",
   "Storage_Streams",
   "UI_Notifications",
+  "Win32_Devices_FunctionDiscovery",
   "Win32_Foundation",
   "Win32_Graphics_Gdi",
   "Win32_Media_Audio",
   "Win32_Media_Audio_Endpoints",
+  "Win32_NetworkManagement_NetManagement",
+  "Win32_NetworkManagement_WiFi",
+  "Win32_Networking_NetworkListManager",
   "Win32_System_Com_StructuredStorage",
   "Win32_System_Variant",
   "Win32_System_Com",
@@ -61,6 +66,7 @@ features = [
   "Win32_UI_Input_KeyboardAndMouse",
   "Win32_UI_Shell",
   "Win32_UI_Shell_Common",
+  "Win32_UI_Shell_PropertiesSystem",
   "Win32_UI_WindowsAndMessaging",
 ]
 

@@ -1,12 +1,13 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { UTILITY_LABEL } from "../components/icons";
+import { UTILITY_ICON, UTILITY_LABEL } from "../components/icons";
 import { cx } from "../components/ui";
 import { WIDE_TABS, type Utility } from "../lib/types";
 
-/** Text tabs for the wide layout, with a highlight that springs to the active tab. */
+/** Icon-over-label tabs for the wide layout, with an underline that springs to the active tab. */
 export function WideTabs({ active, onSelect }: { active: Utility; onSelect: (u: Utility) => void }) {
   const ref = useRef<HTMLDivElement>(null);
   const [pill, setPill] = useState<{ x: number; w: number } | null>(null);
+  // The underline spans the active tab's label, not the whole button.
   const [animate, setAnimate] = useState(false);
   const index = WIDE_TABS.indexOf(active);
 
@@ -15,7 +16,8 @@ export function WideTabs({ active, onSelect }: { active: Utility; onSelect: (u: 
     if (!root) return;
     const measure = () => {
       const el = root.querySelectorAll<HTMLElement>('[role="tab"]')[index];
-      setPill(el ? { x: el.offsetLeft, w: el.offsetWidth } : null);
+      const label = el?.querySelector<HTMLElement>("[data-label]");
+      setPill(el && label ? { x: el.offsetLeft + label.offsetLeft - 4, w: label.offsetWidth + 8 } : null);
     };
     measure();
     const ro = new ResizeObserver(measure);
@@ -41,7 +43,7 @@ export function WideTabs({ active, onSelect }: { active: Utility; onSelect: (u: 
       ref={ref}
       role="tablist"
       aria-label="Utilities"
-      className="relative flex items-center gap-0.5"
+      className="wide-tabs relative flex h-[46px] items-stretch"
       onKeyDown={(e) => {
         if (e.key === "ArrowRight") {
           e.preventDefault();
@@ -54,29 +56,33 @@ export function WideTabs({ active, onSelect }: { active: Utility; onSelect: (u: 
     >
       <span
         aria-hidden
-        className={cx("wide-tab-pill pointer-events-none absolute inset-y-0 left-0 rounded-full", animate && "slide-indicator")}
+        className={cx("wide-tab-line pointer-events-none absolute bottom-0 left-0 h-[2px] rounded-full", animate && "slide-indicator")}
         style={{
           width: pill?.w ?? 0,
           transform: `translateX(${pill?.x ?? 0}px)`,
           opacity: pill ? 1 : 0,
         }}
       />
-      {WIDE_TABS.map((u) => (
-        <button
-          key={u}
-          type="button"
-          role="tab"
-          aria-selected={u === active}
-          tabIndex={u === active || (index < 0 && u === WIDE_TABS[0]) ? 0 : -1}
-          onClick={() => onSelect(u)}
-          className={cx(
-            "press relative h-7 rounded-full px-3 text-[11.5px] font-semibold tracking-[0.01em]",
-            u === active ? "text-accent" : "text-muted hover:text-fg",
-          )}
-        >
-          {UTILITY_LABEL[u]}
-        </button>
-      ))}
+      {WIDE_TABS.map((u) => {
+        const Icon = UTILITY_ICON[u];
+        return (
+          <button
+            key={u}
+            type="button"
+            role="tab"
+            aria-selected={u === active}
+            tabIndex={u === active || (index < 0 && u === WIDE_TABS[0]) ? 0 : -1}
+            onClick={() => onSelect(u)}
+            className={cx(
+              "press-soft press relative flex w-[104px] flex-col items-center justify-center gap-[3px] pb-1 text-[11.5px] font-medium",
+              u === active ? "text-fg" : "text-subtle hover:text-muted",
+            )}
+          >
+            <Icon className="size-[17px]" strokeWidth={u === active ? 2.2 : 1.8} aria-hidden />
+            <span data-label>{UTILITY_LABEL[u]}</span>
+          </button>
+        );
+      })}
     </div>
   );
 }

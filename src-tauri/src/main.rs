@@ -16,6 +16,7 @@ mod services {
     pub mod clipboard;
     pub mod media;
     pub mod productivity;
+    pub mod quick;
     pub mod slots;
     pub mod snippets;
     pub mod system;
@@ -315,7 +316,12 @@ fn main() {
             commands::volume_state,
             commands::volume_set,
             commands::volume_mute,
+            commands::quick_state,
+            commands::quick_set,
+            commands::quick_set_output,
+            commands::quick_open,
             commands::system_stats,
+            commands::system_info,
             commands::power_action,
             commands::widget_set_visible,
             commands::web_search,

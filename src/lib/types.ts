@@ -2,6 +2,7 @@
 // Keep field names in sync with the `#[serde(rename_all = "camelCase")]` structs.
 
 export type Utility =
+  | "dashboard"
   | "music"
   | "clipboard"
   | "apps"
@@ -16,8 +17,10 @@ export type Utility =
   | "search";
 /** Utilities offered in the compact layout's "All utilities" grid. */
 export const UTILITIES: Utility[] = ["music", "clipboard", "apps", "search", "tasks", "calendar", "snippets", "wallpapers", "stats", "power"];
-/** Text tabs of the wide layout, in order. */
-export const WIDE_TABS: Utility[] = ["controls", "today", "search", "stats", "clipboard", "apps", "wallpapers", "power"];
+/** Tabs of the wide layout, in order. */
+export const WIDE_TABS: Utility[] = ["dashboard", "controls", "clipboard", "apps"];
+/** Everything else in the wide layout lives behind the header's grid button. */
+export const WIDE_MORE: Utility[] = ["today", "search", "stats", "wallpapers", "snippets", "power"];
 export type PanelStyle = "compact" | "wide";
 
 export type Theme = "dark" | "light" | "aqua" | "midnight" | "system";
@@ -77,6 +80,41 @@ export interface AppError {
 
 export type Direction = "down" | "up";
 export type ActivityKind = "nowPlaying" | "volume";
+
+export interface RadioTile {
+  on: boolean;
+  connected: boolean;
+  /** The Wi-Fi network name, when connected and Windows shares it. */
+  network: string | null;
+}
+
+export interface AudioOutput {
+  id: string;
+  name: string;
+  isDefault: boolean;
+}
+
+export interface QuickState {
+  /** null when the PC has no such radio. */
+  wifi: RadioTile | null;
+  bluetooth: RadioTile | null;
+  /** null when Night light's state can't be read. */
+  nightLight: boolean | null;
+  /** false until Night light has been turned on once in Windows. */
+  nightLightSwitchable: boolean;
+  darkMode: boolean;
+  outputs: AudioOutput[];
+}
+
+export type QuickSetting = "wifi" | "bluetooth" | "nightLight" | "darkMode";
+export type QuickPage = "wifi" | "bluetooth" | "sound" | "nightLight" | "colors";
+
+export interface SystemInfo {
+  userName: string;
+  osName: string;
+  osVersion: string;
+  computerName: string;
+}
 
 export interface VolumeState {
   available: boolean;

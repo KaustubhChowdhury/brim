@@ -6,13 +6,15 @@ import { useLoader, useSettings, useTauriEvent } from "../lib/hooks";
 import { useMediaState } from "../lib/media";
 import { PanelSwap, closeDelayMs, usePresence } from "../lib/motion";
 import type { AppError, Direction, DockState, IdleForm, SlotView, Utility } from "../lib/types";
-import { UTILITIES, WIDE_TABS } from "../lib/types";
+import { UTILITIES, WIDE_MORE, WIDE_TABS } from "../lib/types";
 import { UTILITY_ICON, UTILITY_LABEL } from "../components/icons";
 import { ErrorBoundary, ErrorNote, IconButton, cx } from "../components/ui";
 import { DockContext, useDock, type DockControls } from "./context";
 import { SlotButton } from "./SlotButton";
 import { ActivityPill, type PillAnchor } from "./ActivityPill";
 import { MusicPanel } from "../panels/MusicPanel";
+import { ControlsPanel } from "../panels/ControlsPanel";
+import { DashboardPanel } from "../panels/DashboardPanel";
 import { ClipboardPanel } from "../panels/ClipboardPanel";
 import { AppsPanel } from "../panels/AppsPanel";
 import { TasksPanel } from "../panels/TasksPanel";
@@ -39,6 +41,7 @@ const LINE_TOP = 3;
 type Phase = "compact" | "opening" | "open" | "closing";
 
 const PANELS: Record<Utility, () => ReactNode> = {
+  dashboard: () => <DashboardPanel />,
   music: () => <MusicPanel />,
   clipboard: () => <ClipboardPanel />,
   apps: () => <AppsPanel />,
@@ -46,7 +49,7 @@ const PANELS: Record<Utility, () => ReactNode> = {
   calendar: () => <CalendarPanel />,
   snippets: () => <SnippetsPanel />,
   wallpapers: () => <WallpapersPanel />,
-  controls: () => <MusicPanel />,
+  controls: () => <ControlsPanel />,
   today: () => <TodayPanel />,
   stats: () => <StatsPanel />,
   power: () => <PowerPanel />,
@@ -279,7 +282,7 @@ export function DockApp() {
             error={error}
             onDismissError={() => setError(null)}
           >
-            <PanelSwap id={utility} order={(wide ? WIDE_TABS : UTILITIES).indexOf(utility)}>
+            <PanelSwap id={utility} order={(wide ? [...WIDE_TABS, ...WIDE_MORE] : UTILITIES).indexOf(utility)}>
               <ErrorBoundary key={utility} name={UTILITY_LABEL[utility]}>
                 {PANELS[utility]()}
               </ErrorBoundary>
@@ -503,14 +506,14 @@ function ExpandedPanel({
       style={{ clipPath: clip, "--enter-y": up ? "10px" : "-10px" } as React.CSSProperties}
     >
       {wide ? (
-        <header data-tauri-drag-region className="morph-content relative flex h-[52px] shrink-0 items-center justify-center px-20">
+        <header data-tauri-drag-region className="morph-content relative flex h-[52px] shrink-0 items-end justify-center px-20">
           <WideTabs active={utility} onSelect={setUtility} />
           <div className="absolute right-3 top-0 flex h-[52px] items-center gap-0.5">
             <IconButton
               size="sm"
               label="More utilities"
               icon={LayoutGrid}
-              active={moreOpen}
+              active={moreOpen || WIDE_MORE.includes(utility)}
               aria-expanded={moreOpen}
               onClick={() => setMoreOpen((v) => !v)}
               className="text-subtle"
@@ -559,7 +562,7 @@ function ExpandedPanel({
             className="pop-menu absolute inset-x-3 top-2 z-10 grid grid-cols-4 gap-1 rounded-xl border border-line bg-[var(--surface-solid)] p-2 shadow-xl"
             style={{ "--origin": controlsOnRight ? "top right" : "top left" } as React.CSSProperties}
           >
-            {UTILITIES.map((u) => {
+            {(wide ? WIDE_MORE : UTILITIES).map((u) => {
               const Icon = UTILITY_ICON[u];
               return (
                 <button

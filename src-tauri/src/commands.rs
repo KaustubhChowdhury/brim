@@ -7,7 +7,8 @@
 use crate::dock::{DockMsg, DockState};
 use crate::error::{AppError, AppResult};
 use crate::services::{
-    apps, clipboard as clip, media, productivity as prod, slots, snippets, system, volume, wallpaper_engine, wallpapers,
+    apps, clipboard as clip, media, productivity as prod, quick, slots, snippets, system, volume, wallpaper_engine,
+    wallpapers,
 };
 use crate::settings::{CaptureState, Settings, Utility, WallpaperFit};
 use crate::state::AppState;
@@ -641,11 +642,43 @@ pub fn volume_mute(state: S<'_>, muted: bool) -> AppResult<()> {
     guard("volume_mute", || state.volume.set_muted(muted))
 }
 
+// ---------------- Quick settings ----------------
+
+#[tauri::command(async)]
+pub fn quick_state() -> AppResult<quick::QuickState> {
+    guard("quick_state", quick::state)
+}
+
+#[tauri::command(async)]
+pub fn quick_set(setting: quick::QuickSetting, on: bool) -> AppResult<quick::QuickState> {
+    guard("quick_set", || quick::set(setting, on))
+}
+
+#[tauri::command(async)]
+pub fn quick_set_output(id: String) -> AppResult<quick::QuickState> {
+    guard("quick_set_output", || quick::set_output(id))
+}
+
+/// Opens one of a fixed set of Windows Settings pages, then closes the panel.
+#[tauri::command(async)]
+pub fn quick_open(state: S<'_>, page: quick::QuickPage) -> AppResult<()> {
+    guard("quick_open", || {
+        quick::open(page)?;
+        state.dock.send(DockMsg::Collapse { restore_focus: false, reply: None });
+        Ok(())
+    })
+}
+
 // ---------------- System ----------------
 
 #[tauri::command(async)]
 pub fn system_stats() -> AppResult<system::SystemStats> {
     guard("system_stats", || Ok(system::stats()))
+}
+
+#[tauri::command(async)]
+pub fn system_info() -> AppResult<system::SystemInfo> {
+    guard("system_info", || Ok(system::info()))
 }
 
 #[tauri::command(async)]

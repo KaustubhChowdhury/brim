@@ -1,9 +1,19 @@
-# Brim
+<p align="center">
+  <img src="assets/logo.svg" width="96" alt="Brim logo" />
+</p>
+
+<h1 align="center">Brim</h1>
+
+<p align="center">
+  <img src="docs/images/dashboard.png" width="720" alt="Brim's Dashboard tab: greeting, PC info, clock, calendar, live usage bars and now playing" />
+</p>
 
 A local-first floating utility dock for Windows 10 and 11. When idle it vanishes, or folds into a thin line at the top of the screen (your choice). Hover where it was and it grows back into the island; click the island or press **Alt+Shift+Space** to open:
 
 | Utility | What it does |
 |---|---|
+| Dashboard | Greeting, PC info and uptime, clock, month calendar with event dots, live CPU/memory/disk bars and now playing |
+| Controls | Quick settings tiles (Wi-Fi, Bluetooth, audio output, Night light, dark mode), a volume slider and a now-playing card tinted by the album art |
 | Music | Now playing, play/pause, skip and seek, for any app with Windows media controls |
 | Clipboard | Searchable text history with pin, reuse, delete, retention, pause and privacy filters |
 | Apps | Start-menu app search, pinned and recent apps, custom programs and shortcuts |
@@ -13,6 +23,10 @@ A local-first floating utility dock for Windows 10 and 11. When idle it vanishes
 | Wallpapers | A local gallery with preview, fit modes and "set as wallpaper" |
 | Stats | Live CPU, memory, disk, battery and uptime |
 | Power | Lock, sleep, restart, shut down, sign out |
+
+<p align="center">
+  <img src="docs/images/controls.png" width="720" alt="Brim's Controls tab: quick settings tiles, volume slider and a now-playing card with a wavy progress bar" />
+</p>
 
 All four dock slots are configurable, and can also launch any app directly. No account, no cloud, no AI, no telemetry.
 
